@@ -48,17 +48,23 @@ pnpm build
 
 ### GitHub Pages
 
-Deploy your email builder to GitHub Pages for free hosting:
+Deploy your email builder to GitHub Pages for free hosting.
+
+**⚠️ IMPORTANT:** Before deploying, enable GitHub Pages:
+1. Go to your repo on GitHub
+2. **Settings** → **Pages**
+3. Set **Source** to **"GitHub Actions"**
+4. Then push your code
 
 ```bash
 # Automatic deployment (recommended)
-# Push to main branch and GitHub Actions handles deployment
+git push origin main  # GitHub Actions handles deployment
 
 # Manual deployment
 pnpm deploy
 ```
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed setup instructions.
+**Getting deployment errors?** See [DEPLOYMENT.md](./DEPLOYMENT.md) for troubleshooting.
 
 **Live Demo:** Once deployed, your app will be available at:
 ```

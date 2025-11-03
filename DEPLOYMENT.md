@@ -2,10 +2,22 @@
 
 This guide explains how to deploy the React Email Builder to GitHub Pages.
 
+> **🚨 Getting "Get Pages site failed" error?** Jump to [Common Setup Issues](#️-common-setup-issues--solutions)
+
 ## Prerequisites
 
 - GitHub repository for this project
 - GitHub account with Pages access
+
+## Quick Start
+
+**Most important step:** Enable GitHub Pages **BEFORE** running the workflow!
+
+1. Go to your repo → **Settings** → **Pages**
+2. Set **Source** to **"GitHub Actions"**
+3. Push your code to trigger deployment
+
+See detailed steps below.
 
 ## Setup Instructions
 
