@@ -1,14 +1,15 @@
-import { Mail, Code, Eye, Download, FileCode } from 'lucide-react';
+import { Mail, Code, Eye, Download, FileCode, Bot } from 'lucide-react';
 
 interface HeaderProps {
   showCode: boolean;
   onToggleView: () => void;
   onExportJSX: () => void;
   onExportHTML: () => void;
+  onOpenAgentTool: () => void;
   hasComponents: boolean;
 }
 
-export const Header = ({ showCode, onToggleView, onExportJSX, onExportHTML, hasComponents }: HeaderProps) => {
+export const Header = ({ showCode, onToggleView, onExportJSX, onExportHTML, onOpenAgentTool, hasComponents }: HeaderProps) => {
   return (
     <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between shadow-sm">
       <div className="flex items-center gap-3">
@@ -21,6 +22,14 @@ export const Header = ({ showCode, onToggleView, onExportJSX, onExportHTML, hasC
         </div>
       </div>
       <div className="flex items-center gap-3">
+        <button
+          onClick={onOpenAgentTool}
+          className="px-4 py-2.5 bg-gradient-to-r from-purple-100 to-purple-200 hover:from-purple-200 hover:to-purple-300 text-purple-700 rounded-lg flex items-center gap-2 font-medium transition-all border border-purple-300"
+          title="Agent Tool Simulator"
+        >
+          <Bot className="w-4 h-4" />
+          Agent Demo
+        </button>
         <button
           onClick={onToggleView}
           className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center gap-2 font-medium transition-colors"

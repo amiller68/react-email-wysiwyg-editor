@@ -1,20 +1,27 @@
 # React Email WYSIWYG Editor
 
-A production-ready visual email builder that generates React Email code and HTML email templates.
+A **proof-of-concept** email builder demonstrating how AI agents can **stream JSX** to build emails in real-time. Includes a visual editor UI and exports to React Email JSX or production-ready HTML.
+
+**Main Purpose:** Reference implementation showing streaming JSX API pattern for AI agents (no DOM clicking or JSON manipulation).
 
 ![React Email Builder](https://img.shields.io/badge/React-19-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)
 
-## Features
+## Key Features
 
-- 🎨 **Visual Email Builder** - Drag-and-drop interface for non-technical users
+**Agent API (Primary Focus):**
+- 🎯 **Streaming JSX API** - AI agents stream JSX token-by-token to build/edit emails
+- 🔄 **Node-Level Targeting** - Replace specific components by ID without regenerating entire email
+- 🤖 **Interactive Demo** - Simulator showing streaming JSX in action (2 modes: whole email + node replacement)
+- 📡 **LLM Integration Ready** - StreamingJSXHandler works with OpenAI, Anthropic, or any streaming LLM
+
+**Email Builder UI (Demo Application):**
+- 🎨 **Visual Editor** - Component palette, drag-and-drop interface for building emails
 - 📧 **React Email Components** - Built on [@react-email/components](https://react.email)
 - 🔄 **Dual Export** - Export as React Email JSX or production-ready HTML
 - ✅ **Real-time Validation** - Check for accessibility and email client compatibility
-- 🎯 **Agent-Friendly** - Built-in API for AI agents to programmatically edit emails
-- 🎭 **Live Preview** - See changes instantly with preview/code toggle
-- 🎨 **Modern UI** - Beautiful interface built with Tailwind CSS
+- 🎭 **Live Preview** - Toggle between preview and code view
 
 ## Component Types
 
@@ -93,12 +100,15 @@ src/
 │   ├── CodeView.tsx         # Code preview mode
 │   └── ValidationPanel.tsx  # Validation error display
 ├── lib/              # Utility functions
-│   ├── codeGenerator.ts     # Generate React Email JSX
-│   ├── htmlGenerator.ts     # Generate HTML emails
-│   ├── validation.ts        # Email validation logic
-│   ├── defaults.ts          # Default component props
-│   ├── componentSelector.ts # Agent API utilities
-│   └── reactEmailTypes.ts   # Type extraction from React Email
+│   ├── streamingJSXParser.ts # Streaming JSX parser for agents
+│   ├── jsxParser.ts          # JSX parsing and generation
+│   ├── agentAPI.ts           # Agent-friendly API wrapper
+│   ├── codeGenerator.ts      # Generate React Email JSX
+│   ├── htmlGenerator.ts      # Generate HTML emails
+│   ├── validation.ts         # Email validation logic
+│   ├── defaults.ts           # Default component props
+│   ├── templates.ts          # Email templates
+│   └── reactEmailTypes.ts    # Type extraction from React Email
 ├── types/            # TypeScript definitions
 │   └── index.ts
 └── App.tsx           # Main application component
@@ -200,54 +210,47 @@ interface ValidationError {
 
 ## Agent API
 
-This builder includes both **client-side** (DOM-based) and **server-side** (data-based) APIs for AI agents to interact with the email editor. See [AGENT_API.md](./AGENT_API.md) for detailed documentation.
+This builder includes a **JSX-based API** designed specifically for AI agents. Instead of manipulating JSON, agents can write natural React/JSX markup!
 
-### Client-Side (Browser)
+### Streaming JSX Demo
 
-DOM-based selector available globally as `window.ComponentSelector`:
+Click the **"Agent Demo"** button in the header to see a **simulation** of real-time JSX streaming! This hardcoded demo shows how an agent COULD manipulate the editor by streaming JSX token-by-token. The demo is not using actual AI - it demonstrates the concept of incremental parsing and rendering that would work with real LLM streaming.
 
-```javascript
-// Available globally as window.ComponentSelector
-const firstHeading = ComponentSelector.getByType('heading')[0];
-firstHeading?.click(); // Select the component
+**Two demo modes:**
+- **Stream Whole Email**: Agent creates entire email from scratch
+- **Replace Node**: Agent targets a specific component by ID and replaces just that component
 
-// Get all components
-const allComponents = ComponentSelector.getAll();
-console.log(`Email has ${allComponents.length} components`);
-```
+### Streaming JSX API (For LLM Integration)
 
-### Server-Side (Node.js, Workers, etc.)
-
-Data-based selector that works without DOM access:
+Built for AI agents to **stream JSX** token-by-token, rendering emails in real-time:
 
 ```typescript
-import { ServerComponentSelector, ComponentQuery } from './lib/serverComponentSelector';
+import { StreamingJSXHandler } from './lib/streamingJSXParser';
 
-// Class-based API
-const selector = new ServerComponentSelector(components);
-const heading = selector.getById('abc123');
-const allButtons = selector.getByType('button');
-const textComponents = selector.findByText('Welcome');
+const handler = new StreamingJSXHandler((components) => {
+  updateEmail(components); // Updates as components are parsed
+});
 
-// Functional API
-const heading = ComponentQuery.getById(components, 'abc123');
-const counts = ComponentQuery.countByType(components);
+// Stream JSX from your LLM:
+handler.handleChunk('<Heading as="h1">');
+handler.handleChunk('Welcome');
+handler.handleChunk('</Heading>');
+// → Heading appears immediately!
+
+handler.handleChunk('<Text>Thank you</Text>');
+// → Text appears!
+
+handler.handleComplete(); // Finalize
 ```
 
-**Server-side features:**
-- ✅ Works in Node.js, Deno, Bun, Web Workers
-- ✅ No DOM dependencies
-- ✅ Type-safe queries
-- ✅ Search by text content or URLs
-- ✅ Get metadata and statistics
-- ✅ Functional or class-based API
+**Why Streaming JSX?**
+- ✅ Stream like regular text (ChatGPT-style)
+- ✅ Real-time rendering as tokens arrive
+- ✅ Natural for LLMs (trained on React/JSX)
+- ✅ No DOM clicking or JSON manipulation needed
+- ✅ Works with OpenAI, Anthropic, or any streaming LLM
 
-### Data Attributes
-
-Every component in the canvas has these data attributes for easy targeting:
-- `data-component-id` - Unique identifier
-- `data-component-type` - Component type (heading, text, button, etc.)
-- `data-component-index` - Position in the email
+See [AGENT_JSX_API.md](./AGENT_JSX_API.md) for integration examples with OpenAI and Anthropic.
 
 ## Type Safety
 

@@ -6,20 +6,34 @@ import { ComponentPalette } from './components/ComponentPalette';
 import { Canvas } from './components/Canvas';
 import { PropertiesPanel } from './components/PropertiesPanel';
 import { CodeView } from './components/CodeView';
+import { AgentToolSimulator } from './components/AgentToolSimulator';
 import { getDefaultProps } from './lib/defaults';
 import { validateEmail } from './lib/validation';
 import { generateReactEmailCode } from './lib/codeGenerator';
 import { generateHTML } from './lib/htmlGenerator';
-import './lib/componentSelector'; // Initialize component selector for agents
+import { createAgentAPI } from './lib/agentAPI'; // Initialize agent API
 
 function App() {
   const [components, setComponents] = useState<EmailComponent[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showCode, setShowCode] = useState(false);
+  const [showAgentTool, setShowAgentTool] = useState(false);
   const [validationErrors, setValidationErrors] = useState<ReturnType<typeof validateEmail>>([]);
 
   useEffect(() => {
     setValidationErrors(validateEmail(components));
+  }, [components]);
+
+  // Expose Agent API globally for easy access
+  useEffect(() => {
+    const api = createAgentAPI(components);
+    (window as any).emailAPI = api;
+    (window as any).getEmailAsJSX = (nodeId?: string) => api.toJSX(nodeId);
+    (window as any).setEmailFromJSX = (jsx: string, nodeId?: string) => {
+      const newComponents = api.fromJSX(jsx, nodeId);
+      setComponents(newComponents);
+      return newComponents;
+    };
   }, [components]);
 
   const addComponent = (type: ComponentType) => {
@@ -67,6 +81,11 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
+  const applyJSXFromAgent = (newComponents: EmailComponent[]) => {
+    setComponents(newComponents);
+    setSelectedId(null);
+  };
+
   const selectedComponent = components.find((c) => c.id === selectedId);
 
   return (
@@ -76,10 +95,20 @@ function App() {
         onToggleView={() => setShowCode(!showCode)}
         onExportJSX={exportJSX}
         onExportHTML={exportHTML}
+        onOpenAgentTool={() => setShowAgentTool(true)}
         hasComponents={components.length > 0}
       />
+      <AgentToolSimulator
+        isOpen={showAgentTool}
+        onClose={() => setShowAgentTool(false)}
+        onApplyJSX={applyJSXFromAgent}
+      />
       <div className="flex-1 flex overflow-hidden">
-        <ComponentPalette onAddComponent={addComponent} validationErrors={validationErrors} />
+        <ComponentPalette
+          onAddComponent={addComponent}
+          onLoadTemplate={setComponents}
+          validationErrors={validationErrors}
+        />
         <div className="flex-1 flex overflow-hidden">
           {showCode ? (
             <CodeView code={generateReactEmailCode(components)} />
