@@ -10,6 +10,7 @@ import { getDefaultProps } from './lib/defaults';
 import { validateEmail } from './lib/validation';
 import { generateReactEmailCode } from './lib/codeGenerator';
 import { generateHTML } from './lib/htmlGenerator';
+import './lib/componentSelector'; // Initialize component selector for agents
 
 function App() {
   const [components, setComponents] = useState<EmailComponent[]>([]);

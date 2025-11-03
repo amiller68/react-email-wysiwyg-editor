@@ -129,7 +129,7 @@ export const Canvas = ({ components, selectedId, onSelectComponent, onDeleteComp
                 <p className="text-gray-500">Select components from the left sidebar to begin</p>
               </div>
             ) : (
-              components.map((comp) => (
+              components.map((comp, idx) => (
                 <div
                   key={comp.id}
                   onClick={() => onSelectComponent(comp.id)}
@@ -138,6 +138,9 @@ export const Canvas = ({ components, selectedId, onSelectComponent, onDeleteComp
                       ? 'ring-2 ring-blue-500 bg-blue-50'
                       : 'hover:bg-gray-50'
                   }`}
+                  data-component-id={comp.id}
+                  data-component-type={comp.type}
+                  data-component-index={idx}
                 >
                   {renderComponent(comp)}
                   {selectedId === comp.id && (
