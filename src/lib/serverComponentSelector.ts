@@ -5,7 +5,11 @@ import type { EmailComponent, ComponentType } from '../types';
  * No DOM access required - can run in Node.js, workers, or any JavaScript environment
  */
 export class ServerComponentSelector {
-  constructor(private components: EmailComponent[]) {}
+  private components: EmailComponent[];
+
+  constructor(components: EmailComponent[]) {
+    this.components = components;
+  }
 
   /**
    * Get a component by its ID

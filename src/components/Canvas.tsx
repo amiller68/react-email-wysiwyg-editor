@@ -1,3 +1,4 @@
+import { createElement } from 'react';
 import { Mail } from 'lucide-react';
 import type { EmailComponent } from '../types';
 
@@ -19,18 +20,17 @@ export const Canvas = ({ components, selectedId, onSelectComponent, onDeleteComp
           color: string;
           fontSize: string;
         };
-        const HeadingTag = props.as as keyof JSX.IntrinsicElements;
-        return (
-          <HeadingTag
-            className="font-bold mb-4"
-            style={{
-              textAlign: props.align as any,
+        return createElement(
+          props.as,
+          {
+            className: "font-bold mb-4",
+            style: {
+              textAlign: props.align as React.CSSProperties['textAlign'],
               color: props.color,
               fontSize: props.fontSize,
-            }}
-          >
-            {props.text}
-          </HeadingTag>
+            }
+          },
+          props.text
         );
       }
       case 'text': {

@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 import { Heading, Text, Button, Img, Hr } from '@react-email/components';
 
 // Extract prop types directly from @react-email/components
