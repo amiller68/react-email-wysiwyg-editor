@@ -9,7 +9,27 @@ This guide explains how to deploy the React Email Builder to GitHub Pages.
 
 ## Setup Instructions
 
-### 1. Update Repository Name in Config
+### Step 1: Create GitHub Repository (if not done)
+
+If you haven't created the repository yet:
+
+```bash
+# Initialize git (if not already done)
+git init
+
+# Add all files
+git add .
+
+# Commit
+git commit -m "Initial commit: React Email WYSIWYG Editor"
+
+# Create repo on GitHub, then:
+git remote add origin https://github.com/YOUR-USERNAME/YOUR-REPO-NAME.git
+git branch -M main
+git push -u origin main
+```
+
+### Step 2: Update Repository Name in Config
 
 If your repository name is **not** `react-email-editor`, update the base path in `vite.config.ts`:
 
@@ -19,18 +39,23 @@ base: process.env.GITHUB_PAGES === 'true' ? '/your-repo-name/' : '/',
 
 Replace `/your-repo-name/` with `/your-actual-repo-name/`.
 
-### 2. Enable GitHub Pages
+### Step 3: Enable GitHub Pages
 
-1. Go to your repository on GitHub
-2. Navigate to **Settings** → **Pages**
-3. Under **Source**, select:
-   - Source: **GitHub Actions**
+**⚠️ IMPORTANT: Do this BEFORE pushing the workflow**
 
-That's it! No need to select a branch manually.
+1. Go to your repository on GitHub: `https://github.com/YOUR-USERNAME/YOUR-REPO-NAME`
+2. Click **Settings** (top navigation)
+3. Click **Pages** (left sidebar, under "Code and automation")
+4. Under **Build and deployment**:
+   - **Source**: Select **GitHub Actions** from the dropdown
+   - (NOT "Deploy from a branch")
+5. You should see a message: "GitHub Actions is now configured to deploy your site"
 
-### 3. Push Your Code
+**That's it!** No need to select a branch manually.
 
-The deployment will trigger automatically when you push to the `main` branch:
+### Step 4: Push Your Code
+
+Now push your code (or push again if you already pushed):
 
 ```bash
 git add .
@@ -38,18 +63,66 @@ git commit -m "Setup GitHub Pages deployment"
 git push origin main
 ```
 
-### 4. Monitor Deployment
+### Step 5: Monitor Deployment
 
 1. Go to the **Actions** tab in your GitHub repository
 2. You'll see the "Deploy to GitHub Pages" workflow running
 3. Once complete (green checkmark), your site is live!
 
-### 5. Access Your Site
+### Step 6: Access Your Site
 
 Your site will be available at:
 ```
 https://your-username.github.io/your-repo-name/
 ```
+
+---
+
+## ⚠️ Common Setup Issues & Solutions
+
+### Error: "Get Pages site failed" or "HttpError: Not Found"
+
+**This means GitHub Pages is not enabled yet!**
+
+**Solution (do this NOW):**
+
+1. **Go to your GitHub repository**
+   - Navigate to: `https://github.com/YOUR-USERNAME/YOUR-REPO-NAME`
+
+2. **Click "Settings"** (top menu bar)
+
+3. **Click "Pages"** (left sidebar under "Code and automation")
+
+4. **Under "Build and deployment":**
+   - Find the **Source** dropdown
+   - Select **"GitHub Actions"**
+   - ❌ Do NOT select "Deploy from a branch"
+
+5. **Save/Confirm** - You should see: "GitHub Actions is now configured to deploy your site"
+
+6. **Re-run the failed workflow:**
+   - Go to **Actions** tab
+   - Click on the failed "Deploy to GitHub Pages" workflow
+   - Click **"Re-run all jobs"** button
+
+**Alternative:** Push a new commit to trigger deployment:
+```bash
+git commit --allow-empty -m "Trigger deployment after enabling Pages"
+git push
+```
+
+### Other Common Issues
+
+**Repository is private but you don't have GitHub Pro?**
+- GitHub Pages on private repos requires GitHub Pro/Team/Enterprise
+- Solution: Make repository public, or upgrade to GitHub Pro
+
+**Wrong repository name in vite.config.ts?**
+- If your repo is named `my-email-builder` but config says `/react-email-editor/`
+- Update `vite.config.ts` line 7 to match your actual repo name
+- Rebuild and push
+
+---
 
 ## Manual Deployment (Alternative)
 
